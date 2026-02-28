@@ -3,83 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Découvrez nos produits informatiques et solutions numériques : sécurité, logiciels professionnels, outils cloud, équipements et services numériques." />
-    <title>ProgiCheck | La Solution de Gestion - Progress Things</title>
+    <meta name="description" content="Découvrez nos produits innovants : ProgiCheck et Binance Ultra Bot — des solutions numériques conçues par Progress Things." />
+    <title>Nos Produits - Progress Things</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 
     <style>
-        /* === STYLES SPÉCIFIQUES AU CONTENU PROGICHECK (Ne modifie pas la navbar) === */
-        .hero-split-container {
+        /* ═══════════════════════════════════════
+           HERO CAROUSEL
+        ════════════════════════════════════════ */
+        .products-hero {
+            position: relative;
+            min-height: 92vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Slide container */
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Glow spécifique par slide */
+        .slide-glow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            transition: opacity 1.2s ease;
+        }
+        .slide-glow.blue {
+            background: radial-gradient(ellipse 70% 60% at 60% 40%, rgba(0,102,255,0.09) 0%, transparent 70%);
+        }
+        .slide-glow.btc {
+            background: radial-gradient(ellipse 70% 60% at 60% 40%, rgba(247,147,26,0.09) 0%, transparent 70%);
+        }
+
+        /* Contenu slide */
+        .slide-inner {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            gap: 5rem;
             align-items: center;
-            min-height: 60vh;
         }
 
-        .ui-mockup-container {
-            background: rgba(13, 17, 23, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.5);
-            overflow: hidden;
-            animation: floatUI 6s ease-in-out infinite;
-        }
+        /* Texte gauche — animations internes */
+        .slide-text { position: relative; }
 
-        .ui-window-bar {
-            padding: 12px 16px;
-            background: rgba(255,255,255,0.05);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            display: flex;
+        .slide-tag {
+            display: inline-flex;
+            align-items: center;
             gap: 8px;
-        }
-        .ui-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); }
-        .ui-dot.red { background: #ff5f56; }
-        .ui-dot.yellow { background: #ffbd2e; }
-        .ui-dot.green { background: #27c93f; }
-
-        .ui-content { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
-        .fake-chart-row { display: flex; gap: 16px; }
-        .fake-chart-block { flex: 1; height: 80px; background: rgba(255,255,255,0.05); border-radius: 12px; }
-        .chart-gradient-1 { background: linear-gradient(45deg, rgba(0, 102, 255, 0.2), rgba(0, 212, 170, 0.4)); }
-        .chart-gradient-2 { background: linear-gradient(45deg, rgba(108, 92, 231, 0.2), rgba(0, 102, 255, 0.3)); }
-        
-        .fake-list-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; }
-        .fake-icon-box { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;}
-        .fake-text-line { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; flex: 1; }
-        .fake-status { width: 20px; height: 20px; border-radius: 50%; background: rgba(39, 201, 63, 0.2); border: 2px solid #27c93f; }
-
-        @keyframes floatUI {
-            0%, 100% { transform: translateY(0px) rotateX(2deg) rotateY(-2deg); }
-            50% { transform: translateY(-20px) rotateX(0deg) rotateY(0deg); }
-        }
-
-        .btn-glow {
-            background: linear-gradient(135deg, #0066FF 0%, #00D4AA 100%);
-            color: white;
-            padding: 1rem 2.5rem;
+            padding: 6px 18px;
             border-radius: 50px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1.6rem;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: all 0.6s ease 0.1s;
+        }
+        .slide-tag.blue  { background: rgba(0,102,255,0.1); border: 1px solid rgba(0,102,255,0.3); color: #4D94FF; }
+        .slide-tag.btc   { background: rgba(247,147,26,0.1); border: 1px solid rgba(247,147,26,0.3); color: #F7931A; }
+
+        .slide-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.4rem;
+            line-height: 1.1;
+            margin-bottom: 1.4rem;
+            color: #fff;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.7s ease 0.2s;
+        }
+        .slide-desc {
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.75;
+            max-width: 480px;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.7s ease 0.35s;
+        }
+        .slide-cta {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: all 0.6s ease 0.5s;
+        }
+        .slide-btn {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
-            transition: all 0.3s ease;
+            padding: 1rem 2.4rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
             text-decoration: none;
+            transition: all 0.3s ease;
         }
+        .slide-btn.blue {
+            background: linear-gradient(135deg, #0066FF 0%, #00D4AA 100%);
+            color: #fff;
+            box-shadow: 0 0 24px rgba(0,102,255,0.35);
+        }
+        .slide-btn.blue:hover { box-shadow: 0 0 40px rgba(0,102,255,0.55); transform: translateY(-2px); }
+        .slide-btn.btc {
+            background: linear-gradient(135deg, #F7931A 0%, #FFD700 100%);
+            color: #000;
+            box-shadow: 0 0 24px rgba(247,147,26,0.35);
+        }
+        .slide-btn.btc:hover { box-shadow: 0 0 40px rgba(247,147,26,0.55); transform: translateY(-2px); }
+
+        /* Texte gradient */
+        .grad-blue { background: linear-gradient(135deg, #0066FF, #00D4AA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .grad-btc  { background: linear-gradient(135deg, #F7931A, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        /* Visuel droit */
+        .slide-visual {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+        }
+
+        /* Quand slide est active → les enfants apparaissent */
+        .slide.active .slide-tag,
+        .slide.active .slide-title,
+        .slide.active .slide-desc,
+        .slide.active .slide-cta,
+        .slide.active .slide-visual {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* ═══ MOCKUP ProgiCheck ═══ */
+        .mockup-progicheck {
+            background: rgba(13,17,23,0.7);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.55), 0 0 40px rgba(0,102,255,0.07);
+            overflow: hidden;
+            animation: floatMockup 6s ease-in-out infinite;
+        }
+        .mockup-win-bar {
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; gap: 8px; align-items: center;
+        }
+        .win-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .win-label {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.2);
+            margin-left: auto;
+            margin-right: auto;
+            letter-spacing: 1px;
+        }
+        .mockup-body { padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+        .fake-row   { display: flex; gap: 14px; }
+        .fake-block { flex: 1; height: 72px; border-radius: 10px; }
+        .fb-blue  { background: linear-gradient(45deg, rgba(0,102,255,0.2), rgba(0,212,170,0.35)); }
+        .fb-purple{ background: linear-gradient(45deg, rgba(108,92,231,0.2), rgba(0,102,255,0.25)); }
+        .fake-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 11px 14px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+        }
+        .fake-icon { width: 30px; height: 30px; border-radius: 7px; background: rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .fake-line { height: 7px; background: rgba(255,255,255,0.09); border-radius: 4px; flex: 1; }
+        .fake-ok   { width: 18px; height: 18px; border-radius: 50%; background: rgba(39,201,63,0.15); border: 2px solid #27c93f; flex-shrink:0; }
+
+        /* ═══ MOCKUP Bot terminal ═══ */
+        .mockup-bot {
+            background: rgba(5,5,5,0.9);
+            border: 1px solid rgba(247,147,26,0.18);
+            border-radius: 16px;
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.65), 0 0 40px rgba(247,147,26,0.08);
+            overflow: hidden;
+            animation: floatMockup 6s ease-in-out infinite 0.5s;
+        }
+        .bot-win-bar {
+            padding: 12px 16px;
+            background: rgba(247,147,26,0.05);
+            border-bottom: 1px solid rgba(247,147,26,0.1);
+            display: flex; gap: 8px; align-items: center;
+        }
+        .bot-win-label {
+            font-family: monospace;
+            font-size: 0.68rem;
+            color: rgba(247,147,26,0.5);
+            margin-left: auto;
+            margin-right: auto;
+            letter-spacing: 1px;
+        }
+        .terminal {
+            padding: 18px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.76rem;
+            line-height: 1.85;
+            display: flex; flex-direction: column; gap: 2px;
+        }
+        .t-dim   { color: rgba(255,255,255,0.22); }
+        .t-muted { color: rgba(255,255,255,0.42); }
+        .t-buy   { color: #00C853; font-weight: 700; }
+        .t-tp    { color: #FFD700; font-weight: 600; }
+        .t-btc   { color: #F7931A; }
+
+        @keyframes floatMockup {
+            0%, 100% { transform: translateY(0px); }
+            50%       { transform: translateY(-14px); }
+        }
+
+        /* ═══════════════════════════════════════
+           PROGRESS BAR & DOTS
+        ════════════════════════════════════════ */
+        .carousel-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            z-index: 10;
+        }
+        .carousel-dots {
+            display: flex;
+            gap: 10px;
+        }
+        .c-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        .c-dot.active {
+            width: 28px;
+            border-radius: 4px;
+        }
+        .c-dot.blue.active  { background: #0066FF; }
+        .c-dot.btc.active   { background: #F7931A; }
+
+        /* Barre de progression */
+        .progress-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 2px;
+            transition: none;
+        }
+        .progress-fill.blue { background: linear-gradient(90deg, #0066FF, #00D4AA); }
+        .progress-fill.btc  { background: linear-gradient(90deg, #F7931A, #FFD700); }
+        .progress-fill.animating {
+            transition: width linear;
+        }
+
+        /* ═══════════════════════════════════════
+           SECTION CARDS FEATURES (en dessous)
+        ════════════════════════════════════════ */
+        .products-section {
+            padding: 5rem 0 8rem;
+            position: relative;
+            z-index: 2;
+        }
+        .products-section-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 3rem;
+            letter-spacing: 1px;
+        }
+        .product-cards-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+        .product-card {
+            background: rgba(13,17,23,0.6);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            padding: 40px 36px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .product-card.blue::before  { background: linear-gradient(90deg, #0066FF, #00D4AA); }
+        .product-card.btc::before   { background: linear-gradient(90deg, #F7931A, #FFD700); }
+        .product-card:hover {
+            transform: translateY(-6px);
+        }
+        .product-card.blue:hover  { border-color: rgba(0,102,255,0.25); box-shadow: 0 20px 50px rgba(0,102,255,0.1); }
+        .product-card.btc:hover   { border-color: rgba(247,147,26,0.25); box-shadow: 0 20px 50px rgba(247,147,26,0.1); }
+
+        .pc-logo {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        .pc-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .pc-desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.48);
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+        .pc-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+        .pc-tag {
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .product-card.blue .pc-tag  { background: rgba(0,102,255,0.1); color: #4D94FF; border: 1px solid rgba(0,102,255,0.2); }
+        .product-card.btc  .pc-tag  { background: rgba(247,147,26,0.1); color: #F7931A; border: 1px solid rgba(247,147,26,0.2); }
+        .pc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: gap 0.2s ease;
+        }
+        .product-card.blue  .pc-link { color: #4D94FF; }
+        .product-card.btc   .pc-link { color: #F7931A; }
+        .pc-link:hover { gap: 14px; }
 
         @media (max-width: 968px) {
-            .hero-split-container { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
-            .ui-mockup-container { max-width: 90%; margin: 0 auto; }
+            .slide-inner { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
+            .slide-desc  { max-width: 100%; }
+            .slide-title { font-size: 2.4rem; }
+            .product-cards-row { grid-template-columns: 1fr; }
+            .carousel-controls { bottom: 20px; }
         }
-
-        .fade-in-left { opacity: 0; transform: translateX(-30px); transition: all 0.8s ease-out; }
-        .fade-in-right { opacity: 0; transform: translateX(30px); transition: all 0.8s ease-out; }
-        .visible { opacity: 1; transform: translateX(0); }
+        @media (max-width: 600px) {
+            .slide-title { font-size: 2rem; }
+        }
     </style>
 </head>
 <body>
@@ -111,471 +415,175 @@
         </ul>
         <a href="contact.html" class="nav-cta desktop">Nous contacter</a>
         <div class="nav-toggle" id="navToggle">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span>
         </div>
     </nav>
 
-    <header class="page-hero">
-        <div class="container hero-split-container">
-            <div class="hero-text-content fade-in-left">
-                <span class="section-tag" style="margin-bottom: 1.5rem; display: inline-block;">Logiciel Propriétaire</span>
-                <h1 style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem;">
-                    Pilotez votre conformité avec <span class="gradient-text">ProgiCheck</span>
-                </h1>
-                <p style="font-size: 1.2rem; color: var(--gray-300); margin-bottom: 2.5rem; line-height: 1.6; max-width: 550px;">
-                    L'écosystème intelligent qui centralise vos opérations, automatise vos audits et sécurise vos décisions stratégiques en temps réel.
-                </p>
-                <div style="display: flex; gap: 1.5rem; align-items: center;">
-                    <a href="https://progicheck.progressthings.com" target="_blank" class="btn-glow">
-                        Accéder à la plateforme
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                    </a>
-                </div>
-            </div>
+    <!-- ═══════════════════════════════════════
+         HERO CAROUSEL
+    ════════════════════════════════════════ -->
+    <div class="products-hero" id="productsHero">
 
-            <div class="hero-visual-content fade-in-right" style="transition-delay: 0.2s;">
-                <div class="ui-mockup-container">
-                    <div class="ui-window-bar">
-                        <div class="ui-dot red"></div><div class="ui-dot yellow"></div><div class="ui-dot green"></div>
+        <!-- SLIDE 1 — ProgiCheck -->
+        <div class="slide active" id="slide-0">
+            <div class="slide-glow blue"></div>
+            <div class="slide-inner">
+                <div class="slide-text">
+                    <div class="slide-tag blue">Logiciel Propriétaire</div>
+                    <h1 class="slide-title">
+                        Pilotez votre conformité avec <span class="grad-blue">ProgiCheck</span>
+                    </h1>
+                    <p class="slide-desc">
+                        L'écosystème intelligent qui centralise vos opérations, automatise vos audits et sécurise vos décisions stratégiques en temps réel.
+                    </p>
+                    <div class="slide-cta">
+                        <a href="https://progicheck.progressthings.com" target="_blank" class="slide-btn blue">
+                            Accéder à la plateforme
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        </a>
                     </div>
-                    <div class="ui-content">
-                        <div class="fake-chart-row">
-                            <div class="fake-chart-block chart-gradient-1"></div>
-                            <div class="fake-chart-block chart-gradient-2"></div>
+                </div>
+                <div class="slide-visual">
+                    <div class="mockup-progicheck">
+                        <div class="mockup-win-bar">
+                            <div class="win-dot" style="background:#ff5f56;"></div>
+                            <div class="win-dot" style="background:#ffbd2e;"></div>
+                            <div class="win-dot" style="background:#27c93f;"></div>
+                            <span class="win-label">ProgiCheck — Dashboard</span>
                         </div>
-                        <div class="fake-list-item">
-                            <div class="fake-icon-box" style="color: #0066FF;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        <div class="mockup-body">
+                            <div class="fake-row">
+                                <div class="fake-block fb-blue"></div>
+                                <div class="fake-block fb-purple"></div>
                             </div>
-                            <div class="fake-text-line"></div>
-                            <div class="fake-status"></div>
-                        </div>
-                        <div class="fake-list-item">
-                            <div class="fake-icon-box" style="color: #00D4AA;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            <div class="fake-item">
+                                <div class="fake-icon" style="color:#0066FF;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                </div>
+                                <div class="fake-line"></div>
+                                <div class="fake-ok"></div>
                             </div>
-                            <div class="fake-text-line" style="width: 60%;"></div>
+                            <div class="fake-item">
+                                <div class="fake-icon" style="color:#00D4AA;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                </div>
+                                <div class="fake-line" style="width:60%;"></div>
+                            </div>
+                            <div class="fake-item">
+                                <div class="fake-icon" style="color:#6C5CE7;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                </div>
+                                <div class="fake-line" style="width:75%;"></div>
+                                <div class="fake-ok"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </header>
 
-    <section class="container" style="padding-bottom: 8rem;">
-        <div class="services-grid animate-on-scroll">
-            <div class="service-card">
-                <div class="service-icon" style="color: #00D4AA;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
-                <h3>Sécurité Maximale</h3>
-                <p>Données chiffrées et hébergées sur une infrastructure cloud hautement disponible.</p>
-            </div>
-            <div class="service-card" style="transition-delay: 0.1s;">
-                <div class="service-icon" style="color: #4D94FF;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg></div>
-                <h3>Tableaux de Bord</h3>
-                <p>Visualisez vos KPIs en un clin d'œil avec des interfaces conçues pour la décision.</p>
-            </div>
-            <div class="service-card" style="transition-delay: 0.2s;">
-                <div class="service-icon" style="color: #6C5CE7;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
-                <h3>Traçabilité Totale</h3>
-                <p>Historique complet des actions pour garantir votre conformité réglementaire.</p>
+        <!-- SLIDE 2 — Binance Ultra Bot -->
+        <div class="slide" id="slide-1">
+            <div class="slide-glow btc"></div>
+            <div class="slide-inner">
+                <div class="slide-text">
+                    <div class="slide-tag btc">₿ Robot de Trading</div>
+                    <h1 class="slide-title">
+                        Automatisez votre crypto avec <span class="grad-btc">Binance Ultra Bot</span>
+                    </h1>
+                    <p class="slide-desc">
+                        Un robot Python qui analyse les cryptos 24h/24 sur Binance avec 4 stratégies combinées — RSI, MACD, Bollinger, EMA — et envoie des alertes Telegram en temps réel.
+                    </p>
+                    <div class="slide-cta">
+                        <a href="https://bitcoin.progressthings.com" target="_blank" class="slide-btn btc">
+                            Découvrir le bot
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="slide-visual">
+                    <div class="mockup-bot">
+                        <div class="bot-win-bar">
+                            <div class="win-dot" style="background:#ff5f56;"></div>
+                            <div class="win-dot" style="background:#ffbd2e;"></div>
+                            <div class="win-dot" style="background:#27c93f;"></div>
+                            <span class="bot-win-label">BINANCE ULTRA BOT v3.0 — LIVE</span>
+                        </div>
+                        <div class="terminal">
+                            <span class="t-dim">[ 14:32:07 ]  CYCLE #247 — Analyse...</span>
+                            <span class="t-muted">  BTC/USDT  RSI:38  MACD:↑  Score: 0.71</span>
+                            <span class="t-buy">  ▶ SIGNAL BUY  BTCUSDT @ 67,842 USDT</span>
+                            <span class="t-btc">    SL: -2.0%  TP: +4.0%  Capital: 1.5%</span>
+                            <span class="t-dim">  ───────────────────────────────────</span>
+                            <span class="t-muted">  ETH/USDT  Score: 0.31 → HOLD</span>
+                            <span class="t-dim">  ───────────────────────────────────</span>
+                            <span class="t-tp">  ✅ TAKE PROFIT  ETH/USDT  +4.2%</span>
+                            <span class="t-dim">  📱 Alerte Telegram envoyée</span>
+                            <span class="t-dim">[ 14:47:07 ]  CYCLE #248...</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
 
-    <!-- ═══════════════════════════════════════════
-         SÉPARATEUR
-    ════════════════════════════════════════════ -->
-    <div class="container" style="padding-bottom: 2rem;">
-        <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);"></div>
+        <!-- Controls -->
+        <div class="carousel-controls">
+            <div class="progress-bar">
+                <div class="progress-fill blue" id="progressFill"></div>
+            </div>
+            <div class="carousel-dots">
+                <div class="c-dot blue active" onclick="goToSlide(0)"></div>
+                <div class="c-dot btc"         onclick="goToSlide(1)"></div>
+            </div>
+        </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════
-         BINANCE ULTRA BOT — HERO SECTION
-    ════════════════════════════════════════════ -->
-    <style>
-        /* Couleurs Bitcoin */
-        --btc: #F7931A;
-        --btc2: #FFB833;
-        --btcgold: #FFD700;
+    <!-- ═══════════════════════════════════════
+         SECTION CARTES PRODUITS
+    ════════════════════════════════════════ -->
+    <section class="products-section">
+        <div class="container">
+            <p class="products-section-title">Nos Solutions</p>
+            <div class="product-cards-row animate-on-scroll">
 
-        .btc-gradient-text {
-            background: linear-gradient(135deg, #F7931A 0%, #FFD700 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .btc-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(247, 147, 26, 0.1);
-            border: 1px solid rgba(247, 147, 26, 0.3);
-            color: #F7931A;
-            padding: 6px 18px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-        }
-        .btn-btc {
-            background: linear-gradient(135deg, #F7931A 0%, #FFD700 100%);
-            color: #000;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 0 25px rgba(247, 147, 26, 0.35);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            font-size: 1rem;
-        }
-        .btn-btc:hover {
-            box-shadow: 0 0 40px rgba(247, 147, 26, 0.55);
-            transform: translateY(-2px);
-        }
-
-        /* Mockup bot terminal */
-        .bot-mockup {
-            background: rgba(5, 5, 5, 0.85);
-            border: 1px solid rgba(247, 147, 26, 0.2);
-            border-radius: 16px;
-            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), 0 0 40px rgba(247,147,26,0.08);
-            overflow: hidden;
-            animation: floatUI 6s ease-in-out infinite;
-        }
-        .bot-win-bar {
-            padding: 12px 16px;
-            background: rgba(247,147,26,0.06);
-            border-bottom: 1px solid rgba(247,147,26,0.12);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .bot-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .bot-win-title {
-            font-family: 'Inter', monospace;
-            font-size: 0.72rem;
-            color: rgba(247,147,26,0.6);
-            margin-left: auto;
-            margin-right: auto;
-            letter-spacing: 1px;
-        }
-        .bot-terminal {
-            padding: 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.78rem;
-            line-height: 1.8;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .tl-dim  { color: rgba(255,255,255,0.25); }
-        .tl-muted{ color: rgba(255,255,255,0.45); }
-        .tl-buy  { color: #00C853; font-weight: 700; }
-        .tl-sell { color: #FF3D00; font-weight: 700; }
-        .tl-btc  { color: #F7931A; }
-        .tl-gold { color: #FFD700; font-weight: 600; }
-
-        /* Packs pricing */
-        .packs-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-top: 3rem;
-        }
-        .pack-card {
-            background: rgba(13,17,23,0.6);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 16px;
-            padding: 32px 28px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        .pack-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-        }
-        .pack-card.starter::before { background: linear-gradient(90deg, #666, #999); }
-        .pack-card.pro::before     { background: linear-gradient(90deg, #F7931A, #FFB833); }
-        .pack-card.vip::before     { background: linear-gradient(90deg, #FFD700, #F7931A); }
-        .pack-card.popular {
-            border-color: rgba(247,147,26,0.3);
-            box-shadow: 0 0 30px rgba(247,147,26,0.1);
-        }
-        .pack-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(247,147,26,0.25);
-        }
-        .pack-badge-popular {
-            position: absolute;
-            top: 16px; right: 16px;
-            background: linear-gradient(135deg, #F7931A, #FFD700);
-            color: #000;
-            font-size: 0.68rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 50px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .pack-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-        .pack-label.starter { color: #999; }
-        .pack-label.pro     { color: #F7931A; }
-        .pack-label.vip     { color: #FFD700; }
-        .pack-price {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-        .pack-price.starter { color: #fff; }
-        .pack-price.pro     { background: linear-gradient(135deg,#F7931A,#FFB833); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-        .pack-price.vip     { background: linear-gradient(135deg,#FFD700,#F7931A); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-        .pack-sub { font-size: 0.8rem; color: rgba(255,255,255,0.35); margin-bottom: 24px; }
-        .pack-features { list-style: none; padding: 0; margin: 0 0 28px; display: flex; flex-direction: column; gap: 10px; }
-        .pack-features li {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.65);
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            line-height: 1.4;
-        }
-        .pack-features li::before {
-            content: '✓';
-            color: #F7931A;
-            font-weight: 700;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-        .pack-btn {
-            display: block;
-            text-align: center;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        .pack-btn.starter {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.12);
-        }
-        .pack-btn.starter:hover { background: rgba(255,255,255,0.1); }
-        .pack-btn.pro {
-            background: linear-gradient(135deg, #F7931A, #FFB833);
-            color: #000;
-            box-shadow: 0 0 20px rgba(247,147,26,0.3);
-        }
-        .pack-btn.pro:hover { box-shadow: 0 0 30px rgba(247,147,26,0.5); transform: translateY(-1px); }
-        .pack-btn.vip {
-            background: linear-gradient(135deg, #FFD700, #F7931A);
-            color: #000;
-            box-shadow: 0 0 20px rgba(255,215,0,0.3);
-        }
-        .pack-btn.vip:hover { box-shadow: 0 0 30px rgba(255,215,0,0.5); transform: translateY(-1px); }
-
-        .bot-features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-top: 3rem;
-        }
-        .bot-feat-card {
-            background: rgba(13,17,23,0.5);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 12px;
-            padding: 24px 20px;
-            transition: all 0.3s ease;
-        }
-        .bot-feat-card:hover {
-            border-color: rgba(247,147,26,0.2);
-            background: rgba(247,147,26,0.03);
-        }
-        .bot-feat-icon {
-            font-size: 1.8rem;
-            margin-bottom: 12px;
-            display: block;
-        }
-        .bot-feat-card h4 {
-            font-size: 1rem;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-        .bot-feat-card p {
-            font-size: 0.83rem;
-            color: rgba(255,255,255,0.45);
-            line-height: 1.6;
-        }
-
-        @media (max-width: 968px) {
-            .packs-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
-            .bot-features-grid { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 600px) {
-            .bot-features-grid { grid-template-columns: 1fr; }
-        }
-    </style>
-
-    <header class="page-hero" style="padding-top: 3rem; padding-bottom: 4rem;">
-        <div class="container hero-split-container">
-            <div class="hero-text-content fade-in-left" style="opacity:0; transform:translateX(-30px); transition: all 0.8s ease-out;">
-                <div class="btc-tag">
-                    <span>₿</span> Robot de Trading
-                </div>
-                <h2 style="font-size: 3.2rem; line-height: 1.1; margin-bottom: 1.5rem;">
-                    Automatisez votre trading avec <span class="btc-gradient-text">Binance Ultra Bot</span>
-                </h2>
-                <p style="font-size: 1.1rem; color: var(--gray-300); margin-bottom: 2.5rem; line-height: 1.7; max-width: 520px;">
-                    Un robot Python qui analyse les cryptos 24h/24 sur Binance avec 4 stratégies combinées — RSI, MACD, Bollinger, EMA — et envoie des alertes Telegram en temps réel.
-                </p>
-                <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
-                    <a href="https://bitcoin.progressthings.com" target="_blank" class="btn-btc">
-                        ₿ Découvrir le bot
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <!-- ProgiCheck -->
+                <div class="product-card blue">
+                    <span class="pc-logo">📊</span>
+                    <div class="pc-name">ProgiCheck</div>
+                    <p class="pc-desc">
+                        Plateforme de gestion de conformité intelligente. Centralisez vos opérations, automatisez vos audits et prenez des décisions éclairées grâce à des tableaux de bord en temps réel.
+                    </p>
+                    <div class="pc-tags">
+                        <span class="pc-tag">Gestion de conformité</span>
+                        <span class="pc-tag">Tableaux de bord</span>
+                        <span class="pc-tag">Cloud sécurisé</span>
+                        <span class="pc-tag">Traçabilité</span>
+                    </div>
+                    <a href="https://progicheck.progressthings.com" target="_blank" class="pc-link">
+                        Accéder à la plateforme
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                     </a>
                 </div>
-            </div>
 
-            <div class="hero-visual-content fade-in-right" style="transition-delay: 0.2s; opacity:0; transform:translateX(30px); transition: all 0.8s ease-out 0.2s;">
-                <div class="bot-mockup">
-                    <div class="bot-win-bar">
-                        <div class="bot-dot" style="background:#ff5f56;"></div>
-                        <div class="bot-dot" style="background:#ffbd2e;"></div>
-                        <div class="bot-dot" style="background:#27c93f;"></div>
-                        <span class="bot-win-title">BINANCE ULTRA BOT v3.0 — LIVE</span>
+                <!-- Binance Ultra Bot -->
+                <div class="product-card btc">
+                    <span class="pc-logo">₿</span>
+                    <div class="pc-name">Binance Ultra Bot</div>
+                    <p class="pc-desc">
+                        Robot de trading automatisé pour Binance. Analyse les cryptomonnaies 24h/24 avec 4 stratégies techniques combinées, gère les risques automatiquement et envoie des alertes Telegram instantanées.
+                    </p>
+                    <div class="pc-tags">
+                        <span class="pc-tag">Trading automatique</span>
+                        <span class="pc-tag">4 stratégies IA</span>
+                        <span class="pc-tag">Alertes Telegram</span>
+                        <span class="pc-tag">Code source Python</span>
                     </div>
-                    <div class="bot-terminal">
-                        <span class="tl-dim">[ 14:32:07 ]  CYCLE #247 — Analyse en cours...</span>
-                        <span class="tl-muted">  BTC/USDT  RSI: 38.2  MACD: ↑  BB: lower  Score: 0.71</span>
-                        <span class="tl-buy">  ▶ SIGNAL BUY  BTC/USDT  @ 67,842 USDT</span>
-                        <span class="tl-btc">    SL: -2.0%  TP: +4.0%  Taille: 1.5% capital</span>
-                        <span class="tl-dim">─────────────────────────────────────────</span>
-                        <span class="tl-muted">  ETH/USDT  RSI: 62.1  MACD: →  Score: 0.31</span>
-                        <span class="tl-muted">  Signal: HOLD — Score insuffisant</span>
-                        <span class="tl-dim">─────────────────────────────────────────</span>
-                        <span class="tl-gold">  ✅ TAKE PROFIT  ETH/USDT  +4.2% / +6.3 USDT</span>
-                        <span class="tl-dim">  📱 Alerte Telegram envoyée</span>
-                        <span class="tl-dim">[ 14:47:07 ]  CYCLE #248 — En attente...</span>
-                    </div>
+                    <a href="https://bitcoin.progressthings.com" target="_blank" class="pc-link">
+                        Découvrir le bot
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
                 </div>
-            </div>
-        </div>
-    </header>
 
-    <!-- Caractéristiques du bot -->
-    <section class="container" style="padding-bottom: 5rem;">
-        <div class="bot-features-grid animate-on-scroll">
-            <div class="bot-feat-card">
-                <span class="bot-feat-icon">⚙️</span>
-                <h4>4 Stratégies combinées</h4>
-                <p>RSI + MACD, Bollinger Bands, EMA Crossover et Volume Profile — toutes pondérées pour un score de décision précis.</p>
-            </div>
-            <div class="bot-feat-card" style="transition-delay:0.1s;">
-                <span class="bot-feat-icon">🛡️</span>
-                <h4>Gestion du risque auto</h4>
-                <p>Stop Loss, Take Profit et Trailing Stop configurables. Arrêt automatique si la perte journalière dépasse votre seuil.</p>
-            </div>
-            <div class="bot-feat-card" style="transition-delay:0.2s;">
-                <span class="bot-feat-icon">📱</span>
-                <h4>Alertes Telegram</h4>
-                <p>Notification instantanée sur votre téléphone à chaque trade ouvert, fermé et résumé horaire de votre portfolio.</p>
-            </div>
-            <div class="bot-feat-card" style="transition-delay:0.3s;">
-                <span class="bot-feat-icon">🧪</span>
-                <h4>Mode Paper Trading</h4>
-                <p>Testez en simulation avec 1 000 USDT virtuels avant de passer en réel — aucun risque pour débuter.</p>
-            </div>
-            <div class="bot-feat-card" style="transition-delay:0.4s;">
-                <span class="bot-feat-icon">☁️</span>
-                <h4>VPS 24h/24</h4>
-                <p>Déployez le bot sur un serveur VPS pour qu'il analyse les marchés en permanence, même PC éteint.</p>
-            </div>
-            <div class="bot-feat-card" style="transition-delay:0.5s;">
-                <span class="bot-feat-icon">🔑</span>
-                <h4>Code source Python</h4>
-                <p>Vous recevez le code source complet — transparent, modifiable, aucune boîte noire. Votre bot, vos règles.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Packs -->
-    <section class="container" style="padding-bottom: 8rem;">
-        <div style="text-align:center; margin-bottom: 1rem;">
-            <span class="btc-tag">Tarifs</span>
-        </div>
-        <h2 style="text-align:center; font-size:2.5rem; margin-bottom: 0.5rem;">
-            Choisissez votre <span class="btc-gradient-text">formule</span>
-        </h2>
-        <p style="text-align:center; color: var(--gray-400); font-size:0.95rem; margin-bottom: 0;">Paiement unique · Livraison immédiate · Code source inclus</p>
-
-        <div class="packs-grid">
-            <!-- STARTER -->
-            <div class="pack-card starter animate-on-scroll">
-                <div class="pack-label starter">Starter</div>
-                <div class="pack-price starter">19 <span style="font-size:1.2rem; color:rgba(255,255,255,0.5);">USDT</span></div>
-                <div class="pack-sub">Paiement unique</div>
-                <ul class="pack-features">
-                    <li>Code source Python complet</li>
-                    <li>Guide installation complet (13 chapitres)</li>
-                    <li>4 stratégies incluses et expliquées</li>
-                    <li>Mode Paper Trading</li>
-                    <li>Alertes Telegram temps réel</li>
-                </ul>
-                <a href="https://bitcoin.progressthings.com" target="_blank" class="pack-btn starter">Commencer →</a>
-            </div>
-            <!-- PRO -->
-            <div class="pack-card pro popular animate-on-scroll" style="transition-delay:0.1s;">
-                <span class="pack-badge-popular">Populaire</span>
-                <div class="pack-label pro">Pro</div>
-                <div class="pack-price pro">39 <span style="font-size:1.2rem; color:rgba(247,147,26,0.5); -webkit-text-fill-color:rgba(247,147,26,0.5);">USDT</span></div>
-                <div class="pack-sub">Paiement unique</div>
-                <ul class="pack-features">
-                    <li>Tout le contenu Starter</li>
-                    <li>Configuration avancée détaillée</li>
-                    <li>3 profils de risque prêts à l'emploi</li>
-                    <li>Guide hébergement VPS 24h/24</li>
-                    <li>Support Telegram 60 jours</li>
-                    <li>Mises à jour 6 mois</li>
-                </ul>
-                <a href="https://bitcoin.progressthings.com" target="_blank" class="pack-btn pro">Obtenir Pro →</a>
-            </div>
-            <!-- VIP -->
-            <div class="pack-card vip animate-on-scroll" style="transition-delay:0.2s;">
-                <div class="pack-label vip">VIP</div>
-                <div class="pack-price vip">79 <span style="font-size:1.2rem; color:rgba(255,215,0,0.5); -webkit-text-fill-color:rgba(255,215,0,0.5);">USDT</span></div>
-                <div class="pack-sub">Paiement unique</div>
-                <ul class="pack-features">
-                    <li>Tout le contenu Pro</li>
-                    <li>Installation à distance (AnyDesk)</li>
-                    <li>Configuration sur-mesure selon votre capital</li>
-                    <li>Stratégies avancées par type de marché</li>
-                    <li>Plan de trading 30 jours</li>
-                    <li>Groupe privé Telegram — support illimité 3 mois</li>
-                </ul>
-                <a href="https://bitcoin.progressthings.com" target="_blank" class="pack-btn vip">Accès VIP →</a>
             </div>
         </div>
     </section>
@@ -629,54 +637,82 @@
     </footer>
 
     <script>
-        // Scripts standards de index.html
+        /* ═══ NAVBAR ═══ */
         const navToggle = document.getElementById('navToggle');
-        const navMenu = document.getElementById('navMenu');
+        const navMenu   = document.getElementById('navMenu');
         navToggle.addEventListener('click', () => {
             navMenu.classList.toggle('active');
             navToggle.classList.toggle('active');
         });
-
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            });
         });
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 50));
 
-        // Animation d'apparition au scroll
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
+        /* ═══ CAROUSEL ═══ */
+        const SLIDE_DURATION = 5500; // ms affiché
+        const TOTAL = 2;
+        const slideColors = ['blue', 'btc'];
+        let current  = 0;
+        let timer    = null;
+        let progTimer = null;
 
-        document.querySelectorAll('.fade-in-left, .fade-in-right, .animate-on-scroll').forEach(el => observer.observe(el));
-    </script>
-    <script>
-        const navToggle = document.getElementById('navToggle');
-        const navMenu = document.getElementById('navMenu');
+        const dots        = document.querySelectorAll('.c-dot');
+        const progressFill = document.getElementById('progressFill');
 
-        if (navToggle && navMenu) {
-            navToggle.addEventListener('click', () => {
-                // Ouvre/Ferme le menu
-                navMenu.classList.toggle('active');
-                // Transforme le bouton en croix (X)
-                navToggle.classList.toggle('active');
-            });
-
-            // Ferme le menu si on clique sur un lien (utile pour les ancres #)
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    navMenu.classList.remove('active');
-                    navToggle.classList.remove('active');
-                });
-            });
+        function startProgress(color) {
+            progressFill.className = 'progress-fill ' + color;
+            progressFill.style.transition = 'none';
+            progressFill.style.width = '0%';
+            // Force reflow
+            progressFill.getBoundingClientRect();
+            progressFill.classList.add('animating');
+            progressFill.style.transition = `width ${SLIDE_DURATION}ms linear`;
+            progressFill.style.width = '100%';
         }
+
+        function goToSlide(idx) {
+            // Sortie
+            document.getElementById('slide-' + current).classList.remove('active');
+            dots[current].classList.remove('active');
+
+            current = idx;
+
+            // Entrée
+            const slide = document.getElementById('slide-' + current);
+            slide.classList.add('active');
+            dots[current].classList.add('active');
+
+            startProgress(slideColors[current]);
+
+            clearTimeout(timer);
+            timer = setTimeout(() => goToSlide((current + 1) % TOTAL), SLIDE_DURATION);
+        }
+
+        // Démarrage
+        startProgress(slideColors[0]);
+        timer = setTimeout(() => goToSlide(1), SLIDE_DURATION);
+
+        // Expose pour les dots onclick
+        window.goToSlide = function(idx) {
+            clearTimeout(timer);
+            goToSlide(idx);
+        };
+
+        /* ═══ SCROLL ANIMATIONS ═══ */
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
     </script>
- <!-- 3CX Live Chat -->
-    <call-us-selector 
-        phonesystem-url="https://1745.3cx.cloud" 
+
+    <!-- 3CX Live Chat -->
+    <call-us-selector
+        phonesystem-url="https://1745.3cx.cloud"
         party="LiveChat430671"
         style="position:fixed; z-index: 999999; right: 20px; bottom: 20px;"
         animation-style="reflection"
@@ -688,8 +724,7 @@
         allow-call="true"
         authentication="both">
     </call-us-selector>
-    
     <script defer src="https://downloads-global.3cx.com/downloads/livechatandtalk/v1/callus.js" id="tcx-callus-js" charset="utf-8"></script>
 
-</style>
 </body>
+</html>

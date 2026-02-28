@@ -10,41 +10,127 @@
 
     <style>
         /* ═══════════════════════════════════════
-           STYLES PRODUITS
+           ONGLETS PRODUITS
         ════════════════════════════════════════ */
-
-        /* Glow BTC (orange) pour la 2ème section */
-        .bg-glow-btc {
-            position: absolute;
-            pointer-events: none;
-            z-index: 0;
-            bottom: -20%;
-            left: -10%;
-            width: 50%;
-            height: 60%;
-            background: radial-gradient(circle, rgba(247,147,26,0.08) 0%, transparent 60%);
-            filter: blur(80px);
+        .products-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 72px; /* hauteur navbar */
         }
 
-        /* Texte gradient BTC */
-        .btc-text {
-            background: linear-gradient(135deg, #F7931A 0%, #FFD700 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        /* Barre d'onglets sticky sous la navbar */
+        .tabs-bar {
+            position: sticky;
+            top: 72px;
+            z-index: 100;
+            background: rgba(10, 14, 23, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 5%;
+            display: flex;
+            gap: 0;
+            align-items: flex-end;
         }
 
-        /* ── Section produit : layout split ── */
-        .product-hero {
-            min-height: 90vh;
+        .tab-btn {
+            position: relative;
+            padding: 18px 28px;
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s ease;
             display: flex;
             align-items: center;
-            padding: 9rem 5% 5rem;
+            gap: 10px;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+        .tab-btn:hover { color: var(--white); }
+
+        .tab-btn.active { color: var(--white); }
+        .tab-btn.active.blue { border-bottom-color: var(--primary); }
+        .tab-btn.active.btc  { border-bottom-color: #F7931A; }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0; right: 0;
+            height: 2px;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .tab-btn.blue::after { background: var(--gradient-primary); }
+        .tab-btn.btc::after  { background: linear-gradient(90deg, #F7931A, #FFD700); }
+        .tab-btn:hover::after { transform: scaleX(1); }
+        .tab-btn.active::after { transform: scaleX(1); }
+
+        .tab-icon {
+            width: 28px; height: 28px;
+            border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.blue .tab-icon { background: rgba(0,102,255,0.1); }
+        .tab-btn.btc  .tab-icon { background: rgba(247,147,26,0.1); }
+        .tab-btn.active.blue .tab-icon { background: var(--primary); }
+        .tab-btn.active.btc  .tab-icon { background: #F7931A; }
+
+        .tab-label { line-height: 1; }
+        .tab-sub {
+            font-size: 0.72rem;
+            color: var(--gray-600);
+            display: block;
+            margin-top: 2px;
+            font-weight: 400;
+        }
+        .tab-btn.active .tab-sub { color: var(--gray-400); }
+
+        /* ═══════════════════════════════════════
+           PANNEAU PRODUIT
+        ════════════════════════════════════════ */
+        .products-viewport {
+            flex: 1;
             position: relative;
             overflow: hidden;
         }
 
-        .product-hero-inner {
+        .product-panel {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            pointer-events: none;
+            overflow-y: auto;
+            /* Animation sortie */
+            transform: translateY(18px);
+            transition: opacity 0.55s cubic-bezier(0.4,0,0.2,1),
+                        transform 0.55s cubic-bezier(0.4,0,0.2,1);
+        }
+        .product-panel.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+            position: relative;
+        }
+
+        /* ── Hero split ── */
+        .prod-hero {
+            min-height: calc(100vh - 72px - 60px);
+            display: flex;
+            align-items: center;
+            padding: 5rem 5% 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prod-hero-inner {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 5rem;
@@ -52,101 +138,119 @@
             max-width: 1200px;
             margin: 0 auto;
             width: 100%;
-            position: relative;
-            z-index: 1;
+            position: relative; z-index: 1;
         }
 
-        /* ── Texte ── */
-        .product-hero-text .section-tag {
+        /* Glow background */
+        .prod-glow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        .prod-glow.blue {
+            background: radial-gradient(ellipse 60% 55% at 65% 50%, rgba(0,102,255,0.09) 0%, transparent 65%);
+        }
+        .prod-glow.btc {
+            background: radial-gradient(ellipse 60% 55% at 65% 50%, rgba(247,147,26,0.08) 0%, transparent 65%);
+        }
+
+        /* Texte hero */
+        .prod-text .section-tag { margin-bottom: 1.5rem; display: inline-flex; }
+        .prod-text .section-tag-btc {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: rgba(247,147,26,0.1);
+            border: 1px solid rgba(247,147,26,0.25);
+            border-radius: var(--radius-full);
+            font-size: 0.8rem; color: #F7931A;
+            font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px;
             margin-bottom: 1.5rem;
-            display: inline-flex;
         }
-        .product-hero-text h1 {
-            font-size: clamp(2.6rem, 5vw, 3.6rem);
-            line-height: 1.1;
-            margin-bottom: 1.4rem;
+        .prod-text h1 {
+            font-size: clamp(2.4rem, 4.5vw, 3.4rem);
+            line-height: 1.1; margin-bottom: 1.3rem;
         }
-        .product-hero-text p {
-            font-size: 1.1rem;
-            color: var(--gray-400);
-            line-height: 1.75;
-            max-width: 500px;
-            margin-bottom: 2.6rem;
+        .prod-text p {
+            font-size: 1.05rem; color: var(--gray-400);
+            line-height: 1.75; max-width: 490px; margin-bottom: 2.5rem;
+        }
+
+        /* Gradient textes */
+        .btc-text {
+            background: linear-gradient(135deg, #F7931A, #FFD700);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         /* ── Mockup ProgiCheck ── */
-        .mockup-card {
+        .mockup-blue {
+            background: rgba(13,17,23,0.75);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
+            backdrop-filter: blur(24px);
+            box-shadow: 0 32px 64px -20px rgba(0,0,0,0.6), 0 0 40px rgba(0,102,255,0.07);
             overflow: hidden;
             animation: floatCard 6s ease-in-out infinite;
         }
-        .mockup-card.blue {
-            background: rgba(13,17,23,0.75);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(24px);
-            box-shadow: 0 32px 64px -20px rgba(0,0,0,0.6), 0 0 40px rgba(0,102,255,0.07);
-        }
-        .mockup-card.btc {
+
+        /* ── Mockup Bot ── */
+        .mockup-btc {
             background: rgba(5,5,5,0.9);
             border: 1px solid rgba(247,147,26,0.16);
-            box-shadow: 0 32px 64px -20px rgba(0,0,0,0.7), 0 0 40px rgba(247,147,26,0.07);
-            animation-delay: 0.4s;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 32px 64px -20px rgba(0,0,0,0.7), 0 0 40px rgba(247,147,26,0.08);
+            overflow: hidden;
+            animation: floatCard 6s ease-in-out infinite 0.5s;
         }
 
         .mock-bar {
             padding: 11px 16px;
             display: flex; align-items: center; gap: 7px;
         }
-        .mockup-card.blue .mock-bar { background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .mockup-card.btc  .mock-bar { background: rgba(247,147,26,0.05); border-bottom: 1px solid rgba(247,147,26,0.09); }
+        .mockup-blue .mock-bar { background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .mockup-btc  .mock-bar { background: rgba(247,147,26,0.05); border-bottom: 1px solid rgba(247,147,26,0.09); }
 
         .mdot { width: 10px; height: 10px; border-radius: 50%; }
-        .mock-label {
-            margin-left: auto; margin-right: auto;
-            font-size: 0.7rem; letter-spacing: 1px;
-        }
-        .mockup-card.blue .mock-label { color: rgba(255,255,255,0.2); font-family: inherit; }
-        .mockup-card.btc  .mock-label { color: rgba(247,147,26,0.45); font-family: monospace; }
+        .mock-lbl { margin: 0 auto; font-size: 0.7rem; letter-spacing: 1px; }
+        .mockup-blue .mock-lbl { color: rgba(255,255,255,0.2); }
+        .mockup-btc  .mock-lbl { color: rgba(247,147,26,0.45); font-family: monospace; }
 
-        .mock-body { padding: 22px; display: flex; flex-direction: column; gap: 14px; }
-
-        /* Éléments visuels ProgiCheck */
+        .mock-body { padding: 22px; display: flex; flex-direction: column; gap: 13px; }
         .f-row { display: flex; gap: 12px; }
-        .f-blk { flex:1; height:70px; border-radius: 10px; }
-        .fb1 { background: linear-gradient(45deg, rgba(0,102,255,0.22), rgba(0,212,170,0.35)); }
-        .fb2 { background: linear-gradient(45deg, rgba(108,92,231,0.18), rgba(0,102,255,0.24)); }
+        .f-blk { flex:1; height:68px; border-radius:10px; }
+        .fb1 { background: linear-gradient(45deg, rgba(0,102,255,0.2), rgba(0,212,170,0.32)); }
+        .fb2 { background: linear-gradient(45deg, rgba(108,92,231,0.18), rgba(0,102,255,0.22)); }
         .f-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 11px 13px;
-            background: rgba(255,255,255,0.03);
-            border-radius: var(--radius-sm);
+            display:flex; align-items:center; gap:12px;
+            padding:11px 13px;
+            background:rgba(255,255,255,0.03);
+            border-radius:var(--radius-sm);
         }
         .f-ico  { width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;flex-shrink:0; }
         .f-line { height:7px;background:rgba(255,255,255,0.08);border-radius:4px;flex:1; }
         .f-ok   { width:17px;height:17px;border-radius:50%;background:rgba(39,201,63,0.15);border:2px solid #27c93f;flex-shrink:0; }
 
-        /* Terminal bot */
+        /* Terminal */
         .terminal {
             padding: 18px 20px;
             font-family: 'Courier New', monospace;
-            font-size: 0.77rem;
-            line-height: 1.9;
+            font-size: 0.76rem; line-height: 1.9;
             display: flex; flex-direction: column; gap: 1px;
         }
-        .t-d { color: rgba(255,255,255,0.22); }
+        .t-d { color: rgba(255,255,255,0.2); }
         .t-m { color: rgba(255,255,255,0.42); }
-        .t-b { color: #00C853; font-weight: 700; }
+        .t-b { color: #00C853; font-weight:700; }
         .t-o { color: #F7931A; }
-        .t-g { color: #FFD700; font-weight: 600; }
+        .t-g { color: #FFD700; font-weight:600; }
 
         @keyframes floatCard {
             0%,100% { transform: translateY(0); }
-            50%      { transform: translateY(-14px); }
+            50%      { transform: translateY(-13px); }
         }
 
-        /* ── Section features (sous chaque hero) ── */
-        .product-features {
-            padding: 0 5% 7rem;
+        /* ── Features ── */
+        .prod-features {
+            padding: 0 5% 6rem;
             position: relative; z-index: 1;
         }
         .features-grid {
@@ -161,81 +265,69 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             padding: 2rem;
-            position: relative;
-            overflow: hidden;
+            position: relative; overflow: hidden;
             transition: var(--transition-base);
         }
+        .feat-card:hover { transform: translateY(-6px); }
+        .feat-card.blue:hover { border-color: rgba(0,102,255,0.3); box-shadow: 0 20px 40px rgba(0,102,255,0.08); }
+        .feat-card.btc:hover  { border-color: rgba(247,147,26,0.3); box-shadow: 0 20px 40px rgba(247,147,26,0.08); }
+
         .feat-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            transition: var(--transition-base);
+            content:''; position:absolute; top:0;left:0;right:0; height:2px;
+            transform: scaleX(0); transition: transform 0.3s ease;
         }
         .feat-card.blue::before { background: var(--gradient-primary); }
-        .feat-card.btc::before  { background: linear-gradient(135deg, rgba(247,147,26,0.1), rgba(255,215,0,0.05)); }
-        .feat-card:hover { transform: translateY(-6px); border-color: rgba(0,102,255,0.3); }
-        .feat-card.btc:hover { border-color: rgba(247,147,26,0.3); }
-        .feat-card:hover::before { opacity: 0.04; }
-        .feat-card > * { position: relative; z-index: 1; }
+        .feat-card.btc::before  { background: linear-gradient(90deg,#F7931A,#FFD700); }
+        .feat-card:hover::before { transform: scaleX(1); }
 
         .feat-icon-box {
-            width: 52px; height: 52px;
-            border-radius: var(--radius-md);
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 1.4rem;
-            transition: var(--transition-base);
+            width:50px; height:50px; border-radius:var(--radius-md);
+            display:flex; align-items:center; justify-content:center;
+            margin-bottom:1.3rem; transition: var(--transition-base);
         }
         .feat-icon-box.blue { background: rgba(0,102,255,0.1); }
         .feat-icon-box.btc  { background: rgba(247,147,26,0.1); }
-        .feat-card:hover .feat-icon-box.blue { background: var(--primary); box-shadow: 0 8px 24px rgba(0,102,255,0.35); }
-        .feat-card:hover .feat-icon-box.btc  { background: #F7931A;       box-shadow: 0 8px 24px rgba(247,147,26,0.3); }
-        .feat-icon-box svg { width:24px; height:24px; fill:none; stroke-width:1.5; transition: var(--transition-base); }
+        .feat-card:hover .feat-icon-box.blue { background: var(--primary); box-shadow: 0 8px 24px rgba(0,102,255,0.3); }
+        .feat-card:hover .feat-icon-box.btc  { background: #F7931A; box-shadow: 0 8px 24px rgba(247,147,26,0.3); }
+        .feat-icon-box svg { width:22px;height:22px;fill:none;stroke-width:1.5;transition:var(--transition-base); }
         .feat-icon-box.blue svg { stroke: var(--primary-light); }
         .feat-icon-box.btc  svg { stroke: #F7931A; }
         .feat-card:hover .feat-icon-box svg { stroke: #fff; }
+        .feat-card h3 { font-size:1.05rem;font-weight:600;margin-bottom:0.6rem;font-family:'Inter',sans-serif; }
+        .feat-card p  { color:var(--gray-500);font-size:0.88rem;line-height:1.65; }
 
-        .feat-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.65rem; font-family:'Inter',sans-serif; }
-        .feat-card p  { color: var(--gray-500); font-size: 0.88rem; line-height: 1.65; }
-
-        /* Section tag BTC */
-        .section-tag-btc {
-            display: inline-flex;
-            align-items: center; gap: 0.5rem;
-            padding: 0.5rem 1.25rem;
-            background: rgba(247,147,26,0.1);
-            border: 1px solid rgba(247,147,26,0.25);
-            border-radius: var(--radius-full);
-            font-size: 0.8rem;
-            color: #F7931A;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+        /* Animations internes au changement d'onglet */
+        .prod-panel-tag,
+        .prod-panel-title,
+        .prod-panel-desc,
+        .prod-panel-cta,
+        .prod-panel-mockup,
+        .feat-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
-
-        /* Diviseur entre les deux produits */
-        .product-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
-            margin: 0 5%;
-        }
-
-        /* Animations au scroll */
-        .fade-left  { opacity:0; transform: translateX(-30px); transition: all 0.8s ease-out; }
-        .fade-right { opacity:0; transform: translateX(30px);  transition: all 0.8s ease-out 0.15s; }
-        .fade-up    { opacity:0; transform: translateY(28px);  transition: all 0.7s ease-out; }
-        .fade-left.visible, .fade-right.visible, .fade-up.visible { opacity:1; transform: none; }
+        .product-panel.active .prod-panel-tag   { opacity:1;transform:none;transition-delay:0.05s; }
+        .product-panel.active .prod-panel-title { opacity:1;transform:none;transition-delay:0.15s; }
+        .product-panel.active .prod-panel-desc  { opacity:1;transform:none;transition-delay:0.25s; }
+        .product-panel.active .prod-panel-cta   { opacity:1;transform:none;transition-delay:0.35s; }
+        .product-panel.active .prod-panel-mockup{ opacity:1;transform:none;transition-delay:0.2s; }
+        .product-panel.active .feat-card        { opacity:1;transform:none; }
+        .product-panel.active .feat-card:nth-child(1) { transition-delay:0.4s; }
+        .product-panel.active .feat-card:nth-child(2) { transition-delay:0.5s; }
+        .product-panel.active .feat-card:nth-child(3) { transition-delay:0.6s; }
 
         /* Responsive */
         @media (max-width: 1024px) {
-            .product-hero-inner { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
-            .product-hero-text p { max-width: 100%; }
+            .prod-hero-inner { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
+            .prod-text p { max-width: 100%; }
             .features-grid { grid-template-columns: repeat(2,1fr); }
-            .mockup-card { max-width: 480px; margin: 0 auto; }
         }
         @media (max-width: 680px) {
             .features-grid { grid-template-columns: 1fr; }
-            .product-hero-text h1 { font-size: 2.2rem; }
+            .tab-btn { padding: 14px 16px; font-size: 0.82rem; }
+            .tab-sub { display: none; }
+            .prod-hero { padding: 3rem 5% 2rem; min-height: auto; }
         }
     </style>
 </head>
@@ -273,212 +365,241 @@
         </div>
     </nav>
 
-    <!-- ═══════════════════════════════════════════════════
-         PRODUIT 01 — PROGICHECK
-    ════════════════════════════════════════════════════ -->
-    <section class="product-hero">
-        <div class="product-hero-inner">
+    <div class="products-page">
 
-            <!-- Texte -->
-            <div class="product-hero-text fade-left">
-                <span class="section-tag">Logiciel Propriétaire</span>
-                <h1>Pilotez votre conformité avec <span class="gradient-text">ProgiCheck</span></h1>
-                <p>L'écosystème intelligent qui centralise vos opérations, automatise vos audits et sécurise vos décisions stratégiques en temps réel.</p>
-                <a href="https://progicheck.progressthings.com" target="_blank" class="btn btn-primary btn-lg">
-                    Accéder à la plateforme
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                </a>
-            </div>
+        <!-- ── BARRE D'ONGLETS ── -->
+        <div class="tabs-bar">
+            <button class="tab-btn blue active" onclick="switchTab('progicheck', this)">
+                <div class="tab-icon">📊</div>
+                <div class="tab-label">
+                    ProgiCheck
+                    <span class="tab-sub">Gestion & Conformité</span>
+                </div>
+            </button>
+            <button class="tab-btn btc" onclick="switchTab('ultrabot', this)">
+                <div class="tab-icon">₿</div>
+                <div class="tab-label">
+                    Binance Ultra Bot
+                    <span class="tab-sub">Trading Automatisé</span>
+                </div>
+            </button>
+        </div>
 
-            <!-- Mockup -->
-            <div class="fade-right">
-                <div class="mockup-card blue">
-                    <div class="mock-bar">
-                        <div class="mdot" style="background:#ff5f56;"></div>
-                        <div class="mdot" style="background:#ffbd2e;"></div>
-                        <div class="mdot" style="background:#27c93f;"></div>
-                        <span class="mock-label">ProgiCheck — Dashboard</span>
-                    </div>
-                    <div class="mock-body">
-                        <div class="f-row">
-                            <div class="f-blk fb1"></div>
-                            <div class="f-blk fb2"></div>
-                        </div>
-                        <div class="f-item">
-                            <div class="f-ico" style="color:#0066FF;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <!-- ── VIEWPORT ── -->
+        <div class="products-viewport">
+
+            <!-- ════ PANNEAU 1 : PROGICHECK ════ -->
+            <div class="product-panel active" id="panel-progicheck">
+                <div class="prod-hero">
+                    <div class="prod-glow blue"></div>
+                    <div class="prod-hero-inner">
+                        <div class="prod-text">
+                            <div class="prod-panel-tag">
+                                <span class="section-tag">Logiciel Propriétaire</span>
                             </div>
-                            <div class="f-line"></div>
-                            <div class="f-ok"></div>
-                        </div>
-                        <div class="f-item">
-                            <div class="f-ico" style="color:#00D4AA;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            <h1 class="prod-panel-title">
+                                Pilotez votre conformité avec <span class="gradient-text">ProgiCheck</span>
+                            </h1>
+                            <p class="prod-panel-desc">
+                                L'écosystème intelligent qui centralise vos opérations, automatise vos audits et sécurise vos décisions stratégiques en temps réel.
+                            </p>
+                            <div class="prod-panel-cta">
+                                <a href="https://progicheck.progressthings.com" target="_blank" class="btn btn-primary btn-lg">
+                                    Accéder à la plateforme
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                </a>
                             </div>
-                            <div class="f-line" style="width:62%;"></div>
                         </div>
-                        <div class="f-item">
-                            <div class="f-ico" style="color:#6C5CE7;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <div class="prod-panel-mockup">
+                            <div class="mockup-blue">
+                                <div class="mock-bar">
+                                    <div class="mdot" style="background:#ff5f56;"></div>
+                                    <div class="mdot" style="background:#ffbd2e;"></div>
+                                    <div class="mdot" style="background:#27c93f;"></div>
+                                    <span class="mock-lbl">ProgiCheck — Dashboard</span>
+                                </div>
+                                <div class="mock-body">
+                                    <div class="f-row">
+                                        <div class="f-blk fb1"></div>
+                                        <div class="f-blk fb2"></div>
+                                    </div>
+                                    <div class="f-item">
+                                        <div class="f-ico" style="color:#0066FF;">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                        </div>
+                                        <div class="f-line"></div>
+                                        <div class="f-ok"></div>
+                                    </div>
+                                    <div class="f-item">
+                                        <div class="f-ico" style="color:#00D4AA;">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                        </div>
+                                        <div class="f-line" style="width:62%;"></div>
+                                    </div>
+                                    <div class="f-item">
+                                        <div class="f-ico" style="color:#6C5CE7;">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                        </div>
+                                        <div class="f-line" style="width:78%;"></div>
+                                        <div class="f-ok"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="f-line" style="width:78%;"></div>
-                            <div class="f-ok"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="prod-features">
+                    <div class="features-grid">
+                        <div class="feat-card blue">
+                            <div class="feat-icon-box blue">
+                                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <h3>Sécurité Maximale</h3>
+                            <p>Données chiffrées et hébergées sur une infrastructure cloud hautement disponible, accessible de partout.</p>
+                        </div>
+                        <div class="feat-card blue">
+                            <div class="feat-icon-box blue">
+                                <svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                            </div>
+                            <h3>Tableaux de Bord</h3>
+                            <p>Visualisez vos KPIs en un coup d'œil. Indicateurs, alertes et suivi de performance centralisés.</p>
+                        </div>
+                        <div class="feat-card blue">
+                            <div class="feat-icon-box blue">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </div>
+                            <h3>Traçabilité Totale</h3>
+                            <p>Historique complet de toutes les actions pour garantir votre conformité réglementaire et vos audits.</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Features ProgiCheck -->
-    <div class="product-features">
-        <div class="features-grid">
-            <div class="feat-card blue animate-on-scroll">
-                <div class="feat-icon-box blue">
-                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                </div>
-                <h3>Sécurité Maximale</h3>
-                <p>Données chiffrées et hébergées sur une infrastructure cloud hautement disponible, accessible de partout en toute sécurité.</p>
-            </div>
-            <div class="feat-card blue animate-on-scroll" style="transition-delay:.1s;">
-                <div class="feat-icon-box blue">
-                    <svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-                </div>
-                <h3>Tableaux de Bord</h3>
-                <p>Visualisez vos KPIs en un coup d'œil. Indicateurs clés, alertes et suivi de performance centralisés en temps réel.</p>
-            </div>
-            <div class="feat-card blue animate-on-scroll" style="transition-delay:.2s;">
-                <div class="feat-icon-box blue">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </div>
-                <h3>Traçabilité Totale</h3>
-                <p>Historique complet de toutes les actions pour garantir votre conformité réglementaire et faciliter vos audits.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Diviseur -->
-    <div class="product-divider"></div>
-
-    <!-- ═══════════════════════════════════════════════════
-         PRODUIT 02 — BINANCE ULTRA BOT
-    ════════════════════════════════════════════════════ -->
-    <section class="product-hero" style="padding-top: 7rem;">
-        <div class="bg-glow-btc"></div>
-        <div class="product-hero-inner">
-
-            <!-- Mockup en premier (droite → gauche sur cette section) -->
-            <div class="fade-left">
-                <div class="mockup-card btc">
-                    <div class="mock-bar">
-                        <div class="mdot" style="background:#ff5f56;"></div>
-                        <div class="mdot" style="background:#ffbd2e;"></div>
-                        <div class="mdot" style="background:#27c93f;"></div>
-                        <span class="mock-label">BINANCE ULTRA BOT v3.0 — LIVE</span>
-                    </div>
-                    <div class="terminal">
-                        <span class="t-d">[ 14:32:07 ]  CYCLE #247 — Analyse...</span>
-                        <span class="t-m">  BTC/USDT  RSI:38  MACD:↑  Score: 0.71</span>
-                        <span class="t-b">  ▶ SIGNAL BUY  BTCUSDT @ 67,842 USDT</span>
-                        <span class="t-o">    SL: -2.0%  TP: +4.0%  Capital: 1.5%</span>
-                        <span class="t-d">  ────────────────────────────────────</span>
-                        <span class="t-m">  ETH/USDT  Score: 0.31 → HOLD</span>
-                        <span class="t-d">  ────────────────────────────────────</span>
-                        <span class="t-g">  ✅ TAKE PROFIT  ETH/USDT  +4.2%</span>
-                        <span class="t-d">  📱 Alerte Telegram envoyée</span>
-                        <span class="t-d">[ 14:47:07 ]  CYCLE #248 — En attente...</span>
+            <!-- ════ PANNEAU 2 : BINANCE ULTRA BOT ════ -->
+            <div class="product-panel" id="panel-ultrabot">
+                <div class="prod-hero">
+                    <div class="prod-glow btc"></div>
+                    <div class="prod-hero-inner">
+                        <div class="prod-text">
+                            <div class="prod-panel-tag">
+                                <span class="section-tag-btc">₿ Robot de Trading</span>
+                            </div>
+                            <h1 class="prod-panel-title">
+                                Automatisez votre crypto avec <span class="btc-text">Binance Ultra Bot</span>
+                            </h1>
+                            <p class="prod-panel-desc">
+                                Un robot Python qui analyse les cryptos 24h/24 sur Binance avec 4 stratégies combinées — RSI, MACD, Bollinger, EMA — et envoie des alertes Telegram en temps réel.
+                            </p>
+                            <div class="prod-panel-cta">
+                                <a href="https://bitcoin.progressthings.com" target="_blank" class="btn btn-lg" style="background:linear-gradient(135deg,#F7931A,#FFD700);color:#000;border-radius:var(--radius-sm);box-shadow:0 0 22px rgba(247,147,26,0.28);font-weight:700;">
+                                    Découvrir le bot
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="prod-panel-mockup">
+                            <div class="mockup-btc">
+                                <div class="mock-bar">
+                                    <div class="mdot" style="background:#ff5f56;"></div>
+                                    <div class="mdot" style="background:#ffbd2e;"></div>
+                                    <div class="mdot" style="background:#27c93f;"></div>
+                                    <span class="mock-lbl">BINANCE ULTRA BOT v3.0 — LIVE</span>
+                                </div>
+                                <div class="terminal">
+                                    <span class="t-d">[ 14:32:07 ]  CYCLE #247 — Analyse...</span>
+                                    <span class="t-m">  BTC/USDT  RSI:38  MACD:↑  Score: 0.71</span>
+                                    <span class="t-b">  ▶ SIGNAL BUY  BTCUSDT @ 67,842 USDT</span>
+                                    <span class="t-o">    SL: -2.0%  TP: +4.0%  Capital: 1.5%</span>
+                                    <span class="t-d">  ────────────────────────────────────</span>
+                                    <span class="t-m">  ETH/USDT  Score: 0.31 → HOLD</span>
+                                    <span class="t-d">  ────────────────────────────────────</span>
+                                    <span class="t-g">  ✅ TAKE PROFIT  ETH/USDT  +4.2%</span>
+                                    <span class="t-d">  📱 Alerte Telegram envoyée</span>
+                                    <span class="t-d">[ 14:47:07 ]  CYCLE #248...</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="prod-features">
+                    <div class="features-grid">
+                        <div class="feat-card btc">
+                            <div class="feat-icon-box btc">
+                                <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            </div>
+                            <h3>4 Stratégies Combinées</h3>
+                            <p>RSI + MACD, Bollinger Bands, EMA Crossover et Volume Profile — toutes pondérées pour un score de décision optimal.</p>
+                        </div>
+                        <div class="feat-card btc">
+                            <div class="feat-icon-box btc">
+                                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <h3>Gestion du Risque Auto</h3>
+                            <p>Stop Loss, Take Profit et Trailing Stop configurables. Arrêt automatique si la perte dépasse votre seuil quotidien.</p>
+                        </div>
+                        <div class="feat-card btc">
+                            <div class="feat-icon-box btc">
+                                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            </div>
+                            <h3>Alertes Telegram</h3>
+                            <p>Notification instantanée à chaque trade ouvert ou fermé. Résumé horaire du portfolio sur votre téléphone.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Texte -->
-            <div class="product-hero-text fade-right">
-                <span class="section-tag-btc">₿ Robot de Trading</span>
-                <h1 style="margin-top:1.5rem;">Automatisez votre crypto avec <span class="btc-text">Binance Ultra Bot</span></h1>
-                <p>Un robot Python qui analyse les cryptos 24h/24 sur Binance avec 4 stratégies combinées — RSI, MACD, Bollinger, EMA — et envoie des alertes Telegram en temps réel.</p>
-                <a href="https://bitcoin.progressthings.com" target="_blank" class="btn btn-lg" style="background:linear-gradient(135deg,#F7931A,#FFD700);color:#000;border-radius:var(--radius-sm);box-shadow:0 0 22px rgba(247,147,26,0.28);font-weight:700;">
-                    Découvrir le bot
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                </a>
-            </div>
-        </div>
-    </section>
+        </div><!-- /viewport -->
 
-    <!-- Features Binance Ultra Bot -->
-    <div class="product-features" style="padding-bottom: 8rem;">
-        <div class="features-grid">
-            <div class="feat-card btc animate-on-scroll">
-                <div class="feat-icon-box btc">
-                    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <img src="white_logo_transparent_background.png" alt="Progress Things">
+                    <p>Votre partenaire technologique de confiance au Burkina Faso. Solutions numériques innovantes pour PME et grandes entreprises.</p>
+                    <div class="footer-social">
+                        <a href="https://web.facebook.com/profile.php?id=61580624773247" target="_blank">
+                            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/progress-things-ab9990346/" target="_blank">
+                            <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                        </a>
+                        <a href="https://x.com/progress_things" target="_blank">
+                            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </a>
+                    </div>
                 </div>
-                <h3>4 Stratégies Combinées</h3>
-                <p>RSI + MACD, Bollinger Bands, EMA Crossover et Volume Profile — toutes pondérées pour un score de décision optimal.</p>
-            </div>
-            <div class="feat-card btc animate-on-scroll" style="transition-delay:.1s;">
-                <div class="feat-icon-box btc">
-                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <div class="footer-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="services.html">Support IT</a></li>
+                        <li><a href="services.html#securite">Cybersécurité</a></li>
+                        <li><a href="m365.html">Microsoft 365</a></li>
+                        <li><a href="services.html#audit">Audit & Conseil</a></li>
+                    </ul>
                 </div>
-                <h3>Gestion du Risque Auto</h3>
-                <p>Stop Loss, Take Profit et Trailing Stop configurables. Le bot s'arrête automatiquement si la perte dépasse votre seuil quotidien.</p>
-            </div>
-            <div class="feat-card btc animate-on-scroll" style="transition-delay:.2s;">
-                <div class="feat-icon-box btc">
-                    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <div class="footer-column">
+                    <h4>Entreprise</h4>
+                    <ul>
+                        <li><a href="apropos.html">À propos</a></li>
+                        <li><a href="partenaires.html">Partenaires</a></li>
+                        <li><a href="produits.html">Nos Produits</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
                 </div>
-                <h3>Alertes Telegram</h3>
-                <p>Notification instantanée à chaque trade ouvert ou fermé, résumé horaire du portfolio directement sur votre téléphone.</p>
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li>Ouagadougou, Burkina Faso</li>
+                        <li>09 BP 1719 Ouagadougou 09</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </div>
+            <div class="footer-bottom">
+                <p>© 2024 Progress Things. Tous droits réservés. Let's do it together.</p>
+            </div>
+        </footer>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <img src="white_logo_transparent_background.png" alt="Progress Things">
-                <p>Votre partenaire technologique de confiance au Burkina Faso. Solutions numériques innovantes pour PME et grandes entreprises.</p>
-                <div class="footer-social">
-                    <a href="https://web.facebook.com/profile.php?id=61580624773247" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                    </a>
-                    <a href="https://www.linkedin.com/in/progress-things-ab9990346/" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-                    </a>
-                    <a href="https://x.com/progress_things" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                    </a>
-                </div>
-            </div>
-            <div class="footer-column">
-                <h4>Services</h4>
-                <ul>
-                    <li><a href="services.html">Support IT</a></li>
-                    <li><a href="services.html#securite">Cybersécurité</a></li>
-                    <li><a href="m365.html">Microsoft 365</a></li>
-                    <li><a href="services.html#audit">Audit & Conseil</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Entreprise</h4>
-                <ul>
-                    <li><a href="apropos.html">À propos</a></li>
-                    <li><a href="partenaires.html">Partenaires</a></li>
-                    <li><a href="produits.html">Nos Produits</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Contact</h4>
-                <ul>
-                    <li>Ouagadougou, Burkina Faso</li>
-                    <li>09 BP 1719 Ouagadougou 09</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2024 Progress Things. Tous droits réservés. Let's do it together.</p>
-        </div>
-    </footer>
+    </div><!-- /products-page -->
 
     <script>
         /* ── NAVBAR ── */
@@ -496,15 +617,20 @@
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50)
         );
 
-        /* ── SCROLL ANIMATIONS ── */
-        const obs = new IntersectionObserver(
-            entries => entries.forEach(e => {
-                if (e.isIntersecting) e.target.classList.add('visible');
-            }),
-            { threshold: 0.12 }
-        );
-        document.querySelectorAll('.fade-left, .fade-right, .fade-up, .animate-on-scroll')
-                .forEach(el => obs.observe(el));
+        /* ── TABS ── */
+        function switchTab(id, btn) {
+            // Désactiver tous
+            document.querySelectorAll('.product-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            // Activer le bon
+            document.getElementById('panel-' + id).classList.add('active');
+            btn.classList.add('active');
+
+            // Remonter en haut du viewport
+            window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 72, behavior: 'smooth' });
+        }
+        window.switchTab = switchTab;
     </script>
 
     <!-- 3CX Live Chat -->

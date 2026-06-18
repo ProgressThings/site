@@ -10,17 +10,13 @@
     <link rel="stylesheet" href="styles.css">
 
     <style>
-        /* ═══════════════════════════════════════
-           ONGLETS PRODUITS
-        ════════════════════════════════════════ */
         .products-page {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding-top: 72px; /* hauteur navbar */
+            padding-top: 72px;
         }
 
-        /* Barre d'onglets sticky sous la navbar */
         .tabs-bar {
             position: sticky;
             top: 72px;
@@ -94,9 +90,6 @@
         }
         .tab-btn.active .tab-sub { color: var(--gray-400); }
 
-        /* ═══════════════════════════════════════
-           PANNEAU PRODUIT
-        ════════════════════════════════════════ */
         .products-viewport {
             flex: 1;
             position: relative;
@@ -109,7 +102,6 @@
             opacity: 0;
             pointer-events: none;
             overflow-y: auto;
-            /* Animation sortie */
             transform: translateY(18px);
             transition: opacity 0.55s cubic-bezier(0.4,0,0.2,1),
                         transform 0.55s cubic-bezier(0.4,0,0.2,1);
@@ -121,7 +113,6 @@
             position: relative;
         }
 
-        /* ── Hero split ── */
         .prod-hero {
             min-height: calc(100vh - 72px - 60px);
             display: flex;
@@ -142,7 +133,6 @@
             position: relative; z-index: 1;
         }
 
-        /* Glow background */
         .prod-glow {
             position: absolute;
             inset: 0;
@@ -155,7 +145,6 @@
             background: radial-gradient(ellipse 60% 55% at 65% 50%, rgba(247,147,26,0.08) 0%, transparent 65%);
         }
 
-        /* Texte hero */
         .prod-text .section-tag { margin-bottom: 1.5rem; display: inline-flex; }
         .prod-text .section-tag-btc {
             display: inline-flex; align-items: center; gap: 0.5rem;
@@ -176,14 +165,12 @@
             line-height: 1.75; max-width: 490px; margin-bottom: 2.5rem;
         }
 
-        /* Gradient textes */
         .btc-text {
             background: linear-gradient(135deg, #F7931A, #FFD700);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        /* ── Mockup ProgiCheck ── */
         .mockup-blue {
             background: rgba(13,17,23,0.75);
             border: 1px solid var(--border-color);
@@ -194,7 +181,6 @@
             animation: floatCard 6s ease-in-out infinite;
         }
 
-        /* ── Mockup Bot ── */
         .mockup-btc {
             background: rgba(5,5,5,0.9);
             border: 1px solid rgba(247,147,26,0.16);
@@ -231,7 +217,6 @@
         .f-line { height:7px;background:rgba(255,255,255,0.08);border-radius:4px;flex:1; }
         .f-ok   { width:17px;height:17px;border-radius:50%;background:rgba(39,201,63,0.15);border:2px solid #27c93f;flex-shrink:0; }
 
-        /* Terminal */
         .terminal {
             padding: 18px 20px;
             font-family: 'Courier New', monospace;
@@ -249,7 +234,6 @@
             50%      { transform: translateY(-13px); }
         }
 
-        /* ── Features ── */
         .prod-features {
             padding: 0 5% 6rem;
             position: relative; z-index: 1;
@@ -297,7 +281,6 @@
         .feat-card h3 { font-size:1.05rem;font-weight:600;margin-bottom:0.6rem;font-family:'Inter',sans-serif; }
         .feat-card p  { color:var(--gray-500);font-size:0.88rem;line-height:1.65; }
 
-        /* Animations internes au changement d'onglet */
         .prod-panel-tag,
         .prod-panel-title,
         .prod-panel-desc,
@@ -318,7 +301,6 @@
         .product-panel.active .feat-card:nth-child(2) { transition-delay:0.5s; }
         .product-panel.active .feat-card:nth-child(3) { transition-delay:0.6s; }
 
-        /* Responsive */
         @media (max-width: 1024px) {
             .prod-hero-inner { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
             .prod-text p { max-width: 100%; }
@@ -368,7 +350,7 @@
 
     <div class="products-page">
 
-        <!-- ── BARRE D'ONGLETS ── -->
+        <!-- BARRE D'ONGLETS -->
         <div class="tabs-bar">
             <button class="tab-btn blue active" onclick="switchTab('progicheck', this)">
                 <div class="tab-icon"> </div>
@@ -386,10 +368,10 @@
             </button>
         </div>
 
-        <!-- ── VIEWPORT ── -->
+        <!-- VIEWPORT -->
         <div class="products-viewport">
 
-            <!-- ════ PANNEAU 1 : PROGICHECK ════ -->
+            <!-- PANNEAU 1 : PROGICHECK -->
             <div class="product-panel active" id="panel-progicheck">
                 <div class="prod-hero">
                     <div class="prod-glow blue"></div>
@@ -476,7 +458,7 @@
                 </div>
             </div>
 
-            <!-- ════ PANNEAU 2 : BINANCE ULTRA BOT ════ -->
+            <!-- PANNEAU 2 : BINANCE ULTRA BOT -->
             <div class="product-panel" id="panel-ultrabot">
                 <div class="prod-hero">
                     <div class="prod-glow btc"></div>
@@ -596,14 +578,13 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© 2024 Progress Things. Tous droits réservés. Let's do it together.</p>
+                <p>© 2026 Progress Things. Tous droits réservés. Let's do it together.</p>
             </div>
         </footer>
 
     </div><!-- /products-page -->
 
     <script>
-        /* ── NAVBAR ── */
         const navToggle = document.getElementById('navToggle');
         const navMenu   = document.getElementById('navMenu');
         navToggle.addEventListener('click', () => {
@@ -618,17 +599,11 @@
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50)
         );
 
-        /* ── TABS ── */
         function switchTab(id, btn) {
-            // Désactiver tous
             document.querySelectorAll('.product-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-
-            // Activer le bon
             document.getElementById('panel-' + id).classList.add('active');
             btn.classList.add('active');
-
-            // Remonter en haut du viewport
             window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 72, behavior: 'smooth' });
         }
         window.switchTab = switchTab;
@@ -652,6 +627,3 @@
 
 </body>
 </html>
-
-
-
